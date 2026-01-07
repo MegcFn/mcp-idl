@@ -12,7 +12,7 @@ type Mcp__calculator__computeinput struct {
 type Mcp__calculator__computeOutput struct {
 	Result       *float64 `json:"result" jsonschema:"Calculation result"`
 	Success      *bool    `json:"success" jsonschema:"Whether the operation succeeded"`
-	Errormessage *string  `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string  `json:"error_message" jsonschema:"Error message if operation failed"`
 	Iterations   int      `json:"iterations" jsonschema:"Number of iterations performed"`
 	Duration     *float64 `json:"duration" jsonschema:"Execution duration in seconds"`
 }
