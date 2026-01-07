@@ -1,0 +1,20 @@
+go_package = "main"
+
+tool mcp__calculator__compute {
+    description "Perform advanced calculations"
+    
+    input {
+        a: float64 "First operand" required
+        b: float64 "Second operand" required
+        operation: string "Operation type (add, subtract, multiply, divide)" required
+        precision: int64 "Decimal precision for result"
+    }
+    
+    output {
+        result: float64 "Calculation result"
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+        iterations: int "Number of iterations performed" required
+        duration: float64 "Execution duration in seconds"
+    }
+}
