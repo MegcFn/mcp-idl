@@ -1,0 +1,101 @@
+go_package = "main"
+
+tool get_system_brightness {
+    description "Get current system brightness level"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_system_brightness {
+    description "Set system brightness level"
+
+    input {
+        brightness: int64 "Brightness level (0-255)" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_brightness_mode {
+    description "Get brightness mode (auto/manual)"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_brightness_mode {
+    description "Set brightness mode"
+
+    input {
+        auto: bool "Whether to enable auto brightness" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_system_auto_rotate {
+    description "Check if auto-rotate is enabled"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_system_auto_rotate {
+    description "Enable or disable auto-rotate"
+
+    input {
+        enabled: bool "Whether to enable auto-rotate" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_screen_timeout {
+    description "Get screen timeout duration"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_screen_timeout {
+    description "Set screen timeout duration"
+
+    input {
+        timeout_ms: int64 "Timeout in milliseconds" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

@@ -1,0 +1,77 @@
+go_package = "main"
+
+tool get_volume {
+    description "Get current volume level for a stream type"
+
+    input {
+        stream_type: string "Stream type: music, ring, alarm, notification, system, voice_call" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_volume {
+    description "Set volume level for a stream type"
+
+    input {
+        stream_type: string "Stream type" required
+        volume: int64 "Volume level" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_ringer_mode {
+    description "Get current ringer mode"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_ringer_mode {
+    description "Set ringer mode"
+
+    input {
+        mode: string "Ringer mode: normal, silent, vibrate" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool is_music_active {
+    description "Check if music is currently playing"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_audio_system_info {
+    description "Get comprehensive audio system information"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

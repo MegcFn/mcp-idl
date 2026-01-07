@@ -1,0 +1,62 @@
+go_package = "main"
+
+tool is_wifi_enabled {
+    description "Check if WiFi is enabled"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_wifi_enabled {
+    description "Enable or disable WiFi"
+
+    input {
+        enabled: bool "Whether to enable WiFi" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_current_wifi_info {
+    description "Get current WiFi connection info"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_scan_results {
+    description "Get WiFi scan results"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool start_scan {
+    description "Start a WiFi scan"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

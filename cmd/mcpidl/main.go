@@ -3,7 +3,9 @@ package main
 import (
 	"fmt"
 	"go/format"
+	"io/fs"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"golang.org/x/text/cases"
@@ -34,32 +36,62 @@ type MCPTool struct {
 }
 
 func main() {
-	if len(os.Args) != 2 && len(os.Args) != 3 {
-		fmt.Println("Usage: mcpidl <idl-file> [output-file]")
+	if len(os.Args) < 2 || len(os.Args) > 3 {
+		fmt.Println("Usage: mcpidl <idl-file|dir/...> [output-file]")
 		os.Exit(1)
 	}
 
-	filePath := os.Args[1]
+	inputPath := os.Args[1]
+
+	// Check if input is directory/... pattern
+	if strings.HasSuffix(inputPath, "/...") {
+		// Extract directory part
+		dir := strings.TrimSuffix(inputPath, "/...")
+		// Find all .mcp files recursively
+		mcpFiles, err := findAllMCPFiles(dir)
+		if err != nil {
+			fmt.Printf("Error finding .mcp files: %v\n", err)
+			os.Exit(1)
+		}
+
+		if len(mcpFiles) == 0 {
+			fmt.Printf("No .mcp files found in %s\n", dir)
+			os.Exit(0)
+		}
+
+		// Generate code for each .mcp file
+		for _, mcpFile := range mcpFiles {
+			generateCodeForFile(mcpFile, "")
+		}
+	} else {
+		// Generate code for single file
+		outputFile := ""
+		if len(os.Args) == 3 {
+			outputFile = os.Args[2]
+		}
+		generateCodeForFile(inputPath, outputFile)
+	}
+}
+
+// generateCodeForFile generates Go code for a single .mcp file
+func generateCodeForFile(filePath, outputFile string) {
 	content, err := os.ReadFile(filePath)
 	if err != nil {
-		fmt.Printf("Error reading file: %v\n", err)
+		fmt.Printf("Error reading file %s: %v\n", filePath, err)
 		os.Exit(1)
 	}
 
 	tools, goPackage, err := ParseMCPTools(string(content))
 	if err != nil {
-		fmt.Printf("Error parsing IDL: %v\n", err)
+		fmt.Printf("Error parsing IDL %s: %v\n", filePath, err)
 		os.Exit(1)
 	}
 
 	// Generate Go code
 	goCode := GenerateGoCode(tools, goPackage)
 
-	// Write to file
-	var outputFile string
-	if len(os.Args) == 3 {
-		outputFile = os.Args[2]
-	} else {
+	// Determine output filename
+	if outputFile == "" {
 		// Generate filename: test.mcp -> test.mcpc.go
 		baseName := strings.TrimSuffix(filePath, ".mcp")
 		outputFile = baseName + ".mcpc.go"
@@ -67,11 +99,41 @@ func main() {
 
 	err = os.WriteFile(outputFile, []byte(goCode), 0644)
 	if err != nil {
-		fmt.Printf("Error writing to file: %v\n", err)
+		fmt.Printf("Error writing to file %s: %v\n", outputFile, err)
 		os.Exit(1)
 	}
 
 	fmt.Printf("Go code generated successfully: %s\n", outputFile)
+}
+
+// findAllMCPFiles recursively finds all .mcp files in the given directory
+func findAllMCPFiles(dir string) ([]string, error) {
+	var mcpFiles []string
+
+	// Walk through all files in the directory recursively
+	err := filepath.WalkDir(dir, func(path string, d fs.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		// Skip directories
+		if d.IsDir() {
+			// Skip .git directory
+			if d.Name() == ".git" {
+				return fs.SkipDir
+			}
+			return nil
+		}
+
+		// Check if file has .mcp extension
+		if strings.HasSuffix(path, ".mcp") {
+			mcpFiles = append(mcpFiles, path)
+		}
+
+		return nil
+	})
+
+	return mcpFiles, err
 }
 
 // ParseMCPTools parses the MCP tool IDL and returns multiple MCPTool structs and go_package
@@ -215,7 +277,16 @@ func parseField(line string) (MCPField, error) {
 
 	// Remove trailing colon from field name
 	field.Name = strings.TrimSuffix(parts[0], ":")
-	field.Type = parts[1]
+
+	// Handle array types: [type] -> []type
+	fieldType := parts[1]
+	if strings.HasPrefix(fieldType, "[") && strings.HasSuffix(fieldType, "]") {
+		// Extract the inner type and convert to golang slice syntax
+		innerType := fieldType[1 : len(fieldType)-1]
+		field.Type = "[]" + innerType
+	} else {
+		field.Type = fieldType
+	}
 
 	// Extract description from quoted string
 	for _, part := range parts[2:] {
@@ -249,6 +320,15 @@ func toCamelCase(s string) string {
 	return strings.Join(parts, "")
 }
 
+// toLowerCamelCase converts snake_case to camelCase (first letter lowercase)
+func toLowerCamelCase(s string) string {
+	camelCase := toCamelCase(s)
+	if len(camelCase) > 0 {
+		return strings.ToLower(string(camelCase[0])) + camelCase[1:]
+	}
+	return ""
+}
+
 // GenerateGoCode generates Go code from multiple MCPTool structs
 func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 	var builder strings.Builder
@@ -259,8 +339,9 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 
 	// Generate structs for each tool
 	for _, tool := range tools {
-		// Generate input struct with TitleCase
-		inputStructName := cases.Title(language.English).String(tool.Input.Name)
+		// Generate input struct with proper CamelCase
+		// tool.Input.Name is like "LaunchInput", so we need to ensure proper camel case
+		inputStructName := toCamelCase(tool.Name) + "Input"
 		builder.WriteString(fmt.Sprintf("type %s struct {\n", inputStructName))
 		for _, field := range tool.Input.Fields {
 			// Convert field name to CamelCase
@@ -270,13 +351,15 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
+			// Convert JSON tag to camelCase (first letter lowercase)
+			jsonTag := toLowerCamelCase(field.Name)
 			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
-				fieldName, fieldType, field.Name, field.Description))
+				fieldName, fieldType, jsonTag, field.Description))
 		}
 		builder.WriteString("}\n\n")
 
-		// Generate output struct with same naming convention as input
-		outputStructName := cases.Title(language.English).String(tool.Name) + "Output"
+		// Generate output struct with proper CamelCase
+		outputStructName := toCamelCase(tool.Name) + "Output"
 		builder.WriteString(fmt.Sprintf("type %s struct {\n", outputStructName))
 		for _, field := range tool.Output.Fields {
 			// Convert field name to CamelCase for Go conventions
@@ -286,8 +369,10 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
+			// Convert JSON tag to camelCase (first letter lowercase)
+			jsonTag := toLowerCamelCase(field.Name)
 			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
-				fieldName, fieldType, field.Name, field.Description))
+				fieldName, fieldType, jsonTag, field.Description))
 		}
 		builder.WriteString("}\n\n")
 	}

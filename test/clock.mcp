@@ -1,0 +1,90 @@
+go_package = "main"
+
+tool set_alarm {
+    description "Set a new alarm"
+
+    input {
+        hour: int64 "Hour (0-23)" required
+        message: string "Alarm message/label"
+        minute: int64 "Minute (0-59)" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_next_alarm_time {
+    description "Get the next scheduled alarm time"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool has_alarm_set {
+    description "Check if any alarm is set"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool show_alarms {
+    description "Open the alarms app to show all alarms"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool start_timer {
+    description "Start a countdown timer"
+
+    input {
+        message: string "Timer message/label"
+        seconds: int64 "Timer duration in seconds" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool show_stopwatch {
+    description "Open the stopwatch"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_system_summary {
+    description "Get system time and clock information summary"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

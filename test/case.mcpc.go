@@ -2,17 +2,17 @@
 
 package main
 
-type Mcp__calculator__computeinput struct {
+type McpCalculatorComputeInput struct {
 	A         float64 `json:"a" jsonschema:"First operand"`
 	B         float64 `json:"b" jsonschema:"Second operand"`
 	Operation string  `json:"operation" jsonschema:"Operation type (add, subtract, multiply, divide)"`
 	Precision *int64  `json:"precision" jsonschema:"Decimal precision for result"`
 }
 
-type Mcp__calculator__computeOutput struct {
+type McpCalculatorComputeOutput struct {
 	Result       *float64 `json:"result" jsonschema:"Calculation result"`
 	Success      *bool    `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string  `json:"error_message" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string  `json:"errorMessage" jsonschema:"Error message if operation failed"`
 	Iterations   int      `json:"iterations" jsonschema:"Number of iterations performed"`
 	Duration     *float64 `json:"duration" jsonschema:"Execution duration in seconds"`
 }

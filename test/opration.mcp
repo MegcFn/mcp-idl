@@ -1,0 +1,126 @@
+go_package = "main"
+
+tool Launch {
+    description "Launch an Android application by its app name"
+
+    input {
+        app_name: string "Application name" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool Tap {
+    description "Tap on a specific coordinate on the screen"
+
+    input {
+        coordinate: [string] "Tap coordinates [x, y]" required
+        origin_size: [string] "Original screen size [width, height]" required
+        scaled_size: [string] "Scaled screenshot size [width, height]" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool Swipe {
+    description "Perform a swipe gesture from one coordinate to another"
+
+    input {
+        end_coordinate: [string] "End coordinates [x, y]" required
+        origin_size: [string] "Original screen size [width, height]" required
+        scaled_size: [string] "Scaled screenshot size [width, height]" required
+        start_coordinate: [string] "Start coordinates [x, y]" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool Type {
+    description "Type text into the currently focused input field"
+
+    input {
+        text: string "Text content to type" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool Wait {
+    description "Wait for a specified duration before proceeding (maximum 30 seconds)"
+
+    input {
+        duration: float64 "Wait duration in seconds (maximum 30 seconds)" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool LongPress {
+    description "Press and hold on a specific coordinate for a duration"
+
+    input {
+        origin_size: [string] "Original screen size [width, height]" required
+        scaled_size: [string] "Scaled screenshot size [width, height]" required
+        coordinate: [string] "Long press coordinates [x, y]" required
+        duration: float64 "Long press duration in seconds (maximum 10 seconds)" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool DoubleClick {
+    description "Perform a double-click on a specific coordinate"
+
+    input {
+        coordinate: [string] "Double click coordinates [x, y]" required
+        origin_size: [string] "Original screen size [width, height]" required
+        scaled_size: [string] "Scaled screenshot size [width, height]" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool Home {
+    description "Return to the home screen"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool Back {
+    description "Navigate back to the previous screen"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

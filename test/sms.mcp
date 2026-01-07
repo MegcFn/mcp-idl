@@ -1,0 +1,93 @@
+go_package = "main"
+
+tool send_sms {
+    description "Send an SMS message"
+
+    input {
+        message: string "Message content" required
+        phone_number: string "Recipient phone number" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_all_sms {
+    description "Get all SMS messages"
+
+    input {
+        limit: int64 "Maximum number of messages"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_inbox_sms {
+    description "Get inbox SMS messages"
+
+    input {
+        limit: int64 "Maximum number of messages"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_sent_sms {
+    description "Get sent SMS messages"
+
+    input {
+        limit: int64 "Maximum number of messages"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_sms_count {
+    description "Get total SMS count"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool delete_sms {
+    description "Delete an SMS message by ID"
+
+    input {
+        sms_id: string "SMS message ID to delete" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool search_sms {
+    description "Search SMS messages by keyword"
+
+    input {
+        keyword: string "Search keyword" required
+        limit: int64 "Maximum number of results"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

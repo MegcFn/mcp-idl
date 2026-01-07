@@ -1,0 +1,109 @@
+go_package = "main"
+
+tool get_all_calendars {
+    description "Retrieve all calendar lists from the device"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_primary_calendar_id {
+    description "Get the primary calendar ID"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_all_events {
+    description "Retrieve all calendar events"
+
+    input {
+        limit: int64 "Maximum number of events to retrieve (default 20)"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_event_count {
+    description "Get the total number of calendar events"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool create_event {
+    description "Create a new calendar event"
+
+    input {
+        description: string "Event description"
+        end_time: int64 "End time in milliseconds since epoch" required
+        location: string "Event location"
+        start_time: int64 "Start time in milliseconds since epoch" required
+        title: string "Event title" required
+        calendar_id: int64 "Calendar ID (optional)"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool delete_event {
+    description "Delete a calendar event by ID"
+
+    input {
+        event_id: int64 "Event ID to delete" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool search_events {
+    description "Search calendar events by keyword"
+
+    input {
+        keyword: string "Search keyword" required
+        limit: int64 "Maximum number of results"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_upcoming_events {
+    description "Get upcoming calendar events"
+
+    input {
+        days: int64 "Number of days to look ahead (default 7)"
+        limit: int64 "Maximum number of events"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

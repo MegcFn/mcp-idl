@@ -1,0 +1,62 @@
+go_package = "main"
+
+tool is_bluetooth_enabled {
+    description "Check if Bluetooth is enabled"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool set_bluetooth_enabled {
+    description "Enable or disable Bluetooth"
+
+    input {
+        enabled: bool "Whether to enable Bluetooth" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_paired_devices {
+    description "Get list of paired Bluetooth devices"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool start_discovery {
+    description "Start Bluetooth device discovery"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool cancel_discovery {
+    description "Cancel Bluetooth device discovery"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

@@ -1,0 +1,103 @@
+go_package = "main"
+
+tool get_all_images {
+    description "Get all images from gallery"
+
+    input {
+        limit: int64 "Maximum number of images"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_image_count {
+    description "Get total image count"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool search_images {
+    description "Search images by filename"
+
+    input {
+        keyword: string "Search keyword" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool delete_image {
+    description "Delete an image by ID"
+
+    input {
+        image_id: string "Image ID to delete" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_all_videos {
+    description "Get all videos from gallery"
+
+    input {
+        limit: int64 "Maximum number of videos"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_video_count {
+    description "Get total video count"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool search_videos {
+    description "Search videos by filename"
+
+    input {
+        keyword: string "Search keyword" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool delete_video {
+    description "Delete a video by ID"
+
+    input {
+        video_id: string "Video ID to delete" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

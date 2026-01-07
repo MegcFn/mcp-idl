@@ -1,0 +1,106 @@
+go_package = "main"
+
+tool add_contact {
+    description "Add a new contact"
+
+    input {
+        email: string "Email address"
+        name: string "Contact name" required
+        phone: string "Phone number" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_all_contacts {
+    description "Get all contacts"
+
+    input {
+        limit: int64 "Maximum number of contacts"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool search_contacts_by_name {
+    description "Search contacts by name"
+
+    input {
+        name: string "Name to search for" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_contact_by_id {
+    description "Get contact details by ID"
+
+    input {
+        contact_id: string "Contact ID" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool delete_contact {
+    description "Delete a contact by ID"
+
+    input {
+        contact_id: string "Contact ID to delete" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool call_phone {
+    description "Initiate a phone call"
+
+    input {
+        phone_number: string "Phone number to call" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool dial_phone {
+    description "Open dialer with a phone number (does not initiate call)"
+
+    input {
+        phone_number: string "Phone number to dial" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_contact_count {
+    description "Get total number of contacts"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}

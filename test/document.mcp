@@ -1,0 +1,79 @@
+go_package = "main"
+
+tool get_all_documents {
+    description "Get all documents"
+
+    input {
+        limit: int64 "Maximum number of documents"
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool get_document_count {
+    description "Get total document count"
+
+    input {
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool create_text_document {
+    description "Create a new text document"
+
+    input {
+        content: string "Document content" required
+        filename: string "Document filename" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool read_text_document {
+    description "Read a text document by ID"
+
+    input {
+        document_id: string "Document ID" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool delete_document {
+    description "Delete a document by ID"
+
+    input {
+        document_id: string "Document ID to delete" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+tool search_documents {
+    description "Search documents by keyword"
+
+    input {
+        keyword: string "Search keyword" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
