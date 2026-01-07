@@ -15,7 +15,7 @@ A Go-based parser for MCP Tool IDL files that generates Go structs for MCP input
 ## Installation
 
 ```bash
-go install github.com/MegcFn/mcp-idl/cmd/parser@latest
+go install github.com/MegcFn/mcp-idl/cmd/mcpidl@latest
 ```
 
 ## Usage
@@ -23,13 +23,13 @@ go install github.com/MegcFn/mcp-idl/cmd/parser@latest
 ### Basic Usage
 
 ```bash
-parser <idl-file.mcpdl>
+mcpidl <idl-file.mcpdl>
 ```
 
 ### Custom Output Filename
 
 ```bash
-parser <idl-file.mcpdl> <output-file.go>
+mcpidl <idl-file.mcpdl> <output-file.go>
 ```
 
 ## IDL Syntax
