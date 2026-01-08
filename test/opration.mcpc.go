@@ -2,6 +2,24 @@
 
 package main
 
+const LaunchDescription string = "Launch an Android application by its app name"
+
+const TapDescription string = "Tap on a specific coordinate on the screen"
+
+const SwipeDescription string = "Perform a swipe gesture from one coordinate to another"
+
+const TypeDescription string = "Type text into the currently focused input field"
+
+const WaitDescription string = "Wait for a specified duration before proceeding (maximum 30 seconds)"
+
+const LongpressDescription string = "Press and hold on a specific coordinate for a duration"
+
+const DoubleclickDescription string = "Perform a double-click on a specific coordinate"
+
+const HomeDescription string = "Return to the home screen"
+
+const BackDescription string = "Navigate back to the previous screen"
+
 type LaunchInput struct {
 	AppName string `json:"appName" jsonschema:"Application name"`
 }

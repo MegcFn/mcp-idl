@@ -2,6 +2,8 @@
 
 package main
 
+const SnakeCaseToolDescription string = "Test snake case tool name"
+
 type SnakeCaseToolInput struct {
 	TestField string `json:"testField" jsonschema:"Test field"`
 }
