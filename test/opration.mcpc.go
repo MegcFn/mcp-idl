@@ -2,21 +2,39 @@
 
 package main
 
+const LaunchTool string = "Launch"
+
 const LaunchDescription string = "Launch an Android application by its app name"
+
+const TapTool string = "Tap"
 
 const TapDescription string = "Tap on a specific coordinate on the screen"
 
+const SwipeTool string = "Swipe"
+
 const SwipeDescription string = "Perform a swipe gesture from one coordinate to another"
+
+const TypeTool string = "Type"
 
 const TypeDescription string = "Type text into the currently focused input field"
 
+const WaitTool string = "Wait"
+
 const WaitDescription string = "Wait for a specified duration before proceeding (maximum 30 seconds)"
+
+const LongpressTool string = "LongPress"
 
 const LongpressDescription string = "Press and hold on a specific coordinate for a duration"
 
+const DoubleclickTool string = "DoubleClick"
+
 const DoubleclickDescription string = "Perform a double-click on a specific coordinate"
 
+const HomeTool string = "Home"
+
 const HomeDescription string = "Return to the home screen"
+
+const BackTool string = "Back"
 
 const BackDescription string = "Navigate back to the previous screen"
 

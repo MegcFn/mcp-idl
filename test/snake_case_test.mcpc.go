@@ -2,6 +2,8 @@
 
 package main
 
+const SnakeCaseTool string = "snake_case_tool"
+
 const SnakeCaseToolDescription string = "Test snake case tool name"
 
 type SnakeCaseToolInput struct {
