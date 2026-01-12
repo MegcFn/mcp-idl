@@ -11,7 +11,7 @@ tool mcp__calculator__compute {
     }
     
     output {
-        result: float64 "Calculation result"
+        result: object "Calculation result" required
         success: bool "Whether the operation succeeded"
         error_message: string "Error message if operation failed"
         iterations: int "Number of iterations performed" required

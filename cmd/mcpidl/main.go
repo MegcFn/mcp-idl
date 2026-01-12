@@ -382,7 +382,7 @@ func parseField(line string) (MCPField, error) {
 
 	// Remove trailing colon from field name
 	field.Name = strings.TrimSuffix(parts[0], ":")
-
+	
 	// Handle array types: [type] -> []type
 	fieldType := parts[1]
 	if strings.HasPrefix(fieldType, "[") && strings.HasSuffix(fieldType, "]") {
@@ -390,7 +390,12 @@ func parseField(line string) (MCPField, error) {
 		innerType := fieldType[1 : len(fieldType)-1]
 		field.Type = "[]" + innerType
 	} else {
-		field.Type = fieldType
+		// Handle object type: object -> map[string]any
+		if fieldType == "object" {
+			field.Type = "map[string]any"
+		} else {
+			field.Type = fieldType
+		}
 	}
 
 	// Extract description from quoted string

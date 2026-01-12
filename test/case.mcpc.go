@@ -2,6 +2,10 @@
 
 package main
 
+const McpCalculatorComputeTool string = "mcp__calculator__compute"
+
+const McpCalculatorComputeDescription string = `Perform advanced calculations`
+
 type McpCalculatorComputeInput struct {
 	A         float64 `json:"a" jsonschema:"First operand"`
 	B         float64 `json:"b" jsonschema:"Second operand"`
@@ -9,10 +13,71 @@ type McpCalculatorComputeInput struct {
 	Precision *int64  `json:"precision" jsonschema:"Decimal precision for result"`
 }
 
+// GetA returns the value of A field
+func (s McpCalculatorComputeInput) GetA() float64 {
+	return s.A
+}
+
+// GetB returns the value of B field
+func (s McpCalculatorComputeInput) GetB() float64 {
+	return s.B
+}
+
+// GetOperation returns the value of Operation field
+func (s McpCalculatorComputeInput) GetOperation() string {
+	return s.Operation
+}
+
+// GetPrecision returns the value of Precision field
+func (s McpCalculatorComputeInput) GetPrecision() int64 {
+	if s.Precision == nil {
+		var zero int64
+		return zero
+	}
+	return *s.Precision
+}
+
 type McpCalculatorComputeOutput struct {
-	Result       *float64 `json:"result" jsonschema:"Calculation result"`
-	Success      *bool    `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string  `json:"errorMessage" jsonschema:"Error message if operation failed"`
-	Iterations   int      `json:"iterations" jsonschema:"Number of iterations performed"`
-	Duration     *float64 `json:"duration" jsonschema:"Execution duration in seconds"`
+	Result       map[string]any `json:"result" jsonschema:"Calculation result"`
+	Success      *bool          `json:"success" jsonschema:"Whether the operation succeeded"`
+	ErrorMessage *string        `json:"error_message" jsonschema:"Error message if operation failed"`
+	Iterations   int            `json:"iterations" jsonschema:"Number of iterations performed"`
+	Duration     *float64       `json:"duration" jsonschema:"Execution duration in seconds"`
+}
+
+// GetResult returns the value of Result field
+func (s McpCalculatorComputeOutput) GetResult() map[string]any {
+	return s.Result
+}
+
+// GetSuccess returns the value of Success field
+func (s McpCalculatorComputeOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s McpCalculatorComputeOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
+}
+
+// GetIterations returns the value of Iterations field
+func (s McpCalculatorComputeOutput) GetIterations() int {
+	return s.Iterations
+}
+
+// GetDuration returns the value of Duration field
+func (s McpCalculatorComputeOutput) GetDuration() float64 {
+	if s.Duration == nil {
+		var zero float64
+		return zero
+	}
+	return *s.Duration
 }
