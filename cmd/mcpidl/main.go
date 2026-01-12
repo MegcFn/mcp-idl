@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"unicode"
 
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
@@ -311,9 +312,35 @@ func parseField(line string) (MCPField, error) {
 	return field, nil
 }
 
-// toCamelCase converts snake_case to CamelCase
+// toCamelCase converts any case to CamelCase (proper for Go identifiers)
 func toCamelCase(s string) string {
-	parts := strings.Split(s, "_")
+	// If already starts with uppercase, assume it's already CamelCase
+	if len(s) > 0 && unicode.IsUpper(rune(s[0])) {
+		return s
+	}
+
+	// Handle camelCase first - split on uppercase letters
+	var parts []string
+	current := ""
+	for _, r := range s {
+		if unicode.IsUpper(r) {
+			if current != "" {
+				parts = append(parts, current)
+				current = ""
+			}
+		}
+		current += string(r)
+	}
+	if current != "" {
+		parts = append(parts, current)
+	}
+
+	// If no uppercase letters found, check for snake_case
+	if len(parts) == 1 {
+		parts = strings.Split(s, "_")
+	}
+
+	// Convert each part to TitleCase and join
 	for i, part := range parts {
 		parts[i] = cases.Title(language.English).String(part)
 	}
@@ -327,6 +354,18 @@ func toLowerCamelCase(s string) string {
 		return strings.ToLower(string(camelCase[0])) + camelCase[1:]
 	}
 	return ""
+}
+
+// toSnakeCase converts camelCase or PascalCase to snake_case
+func toSnakeCase(s string) string {
+	var result strings.Builder
+	for i, r := range s {
+		if i > 0 && unicode.IsUpper(r) {
+			result.WriteRune('_')
+		}
+		result.WriteRune(unicode.ToLower(r))
+	}
+	return result.String()
 }
 
 // GenerateGoCode generates Go code from multiple MCPTool structs
@@ -346,7 +385,9 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 		if !strings.HasSuffix(camelCaseName, "Tool") {
 			toolNameConst = camelCaseName + "Tool"
 		}
-		builder.WriteString(fmt.Sprintf("const %s string = \"%s\"\n\n", toolNameConst, tool.Name))
+		// Convert tool.Name to snake_case
+		snakeCaseToolName := toSnakeCase(tool.Name)
+		builder.WriteString(fmt.Sprintf("const %s string = \"%s\"\n\n", toolNameConst, snakeCaseToolName))
 
 		// Generate description constant: CamelCase(tool.Name) + "Description"
 		descConstName := camelCaseName + "Description"
@@ -367,8 +408,8 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to camelCase (first letter lowercase)
-			jsonTag := toLowerCamelCase(field.Name)
+			// Convert JSON tag to snake_case
+			jsonTag := toSnakeCase(field.Name)
 			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
 				fieldName, fieldType, jsonTag, field.Description))
 		}
@@ -385,8 +426,8 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to camelCase (first letter lowercase)
-			jsonTag := toLowerCamelCase(field.Name)
+			// Convert JSON tag to snake_case
+			jsonTag := toSnakeCase(field.Name)
 			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
 				fieldName, fieldType, jsonTag, field.Description))
 		}

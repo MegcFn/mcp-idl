@@ -2,72 +2,72 @@
 
 package main
 
-const LaunchTool string = "Launch"
+const LaunchTool string = "launch"
 
 const LaunchDescription string = "Launch an Android application by its app name"
 
-const TapTool string = "Tap"
+const TapTool string = "tap"
 
 const TapDescription string = "Tap on a specific coordinate on the screen"
 
-const SwipeTool string = "Swipe"
+const SwipeTool string = "swipe"
 
 const SwipeDescription string = "Perform a swipe gesture from one coordinate to another"
 
-const TypeTool string = "Type"
+const TypeTool string = "type"
 
 const TypeDescription string = "Type text into the currently focused input field"
 
-const WaitTool string = "Wait"
+const WaitTool string = "wait"
 
 const WaitDescription string = "Wait for a specified duration before proceeding (maximum 30 seconds)"
 
-const LongpressTool string = "LongPress"
+const LongPressTool string = "long_press"
 
-const LongpressDescription string = "Press and hold on a specific coordinate for a duration"
+const LongPressDescription string = "Press and hold on a specific coordinate for a duration"
 
-const DoubleclickTool string = "DoubleClick"
+const DoubleClickTool string = "double_click"
 
-const DoubleclickDescription string = "Perform a double-click on a specific coordinate"
+const DoubleClickDescription string = "Perform a double-click on a specific coordinate"
 
-const HomeTool string = "Home"
+const HomeTool string = "home"
 
 const HomeDescription string = "Return to the home screen"
 
-const BackTool string = "Back"
+const BackTool string = "back"
 
 const BackDescription string = "Navigate back to the previous screen"
 
 type LaunchInput struct {
-	AppName string `json:"appName" jsonschema:"Application name"`
+	AppName string `json:"app_name" jsonschema:"Application name"`
 }
 
 type LaunchOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
 type TapInput struct {
 	Coordinate []string `json:"coordinate" jsonschema:"Tap coordinates [x, y]"`
-	OriginSize []string `json:"originSize" jsonschema:"Original screen size [width, height]"`
-	ScaledSize []string `json:"scaledSize" jsonschema:"Scaled screenshot size [width, height]"`
+	OriginSize []string `json:"origin_size" jsonschema:"Original screen size [width, height]"`
+	ScaledSize []string `json:"scaled_size" jsonschema:"Scaled screenshot size [width, height]"`
 }
 
 type TapOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
 type SwipeInput struct {
-	EndCoordinate   []string `json:"endCoordinate" jsonschema:"End coordinates [x, y]"`
-	OriginSize      []string `json:"originSize" jsonschema:"Original screen size [width, height]"`
-	ScaledSize      []string `json:"scaledSize" jsonschema:"Scaled screenshot size [width, height]"`
-	StartCoordinate []string `json:"startCoordinate" jsonschema:"Start coordinates [x, y]"`
+	EndCoordinate   []string `json:"end_coordinate" jsonschema:"End coordinates [x, y]"`
+	OriginSize      []string `json:"origin_size" jsonschema:"Original screen size [width, height]"`
+	ScaledSize      []string `json:"scaled_size" jsonschema:"Scaled screenshot size [width, height]"`
+	StartCoordinate []string `json:"start_coordinate" jsonschema:"Start coordinates [x, y]"`
 }
 
 type SwipeOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
 type TypeInput struct {
@@ -76,7 +76,7 @@ type TypeInput struct {
 
 type TypeOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
 type WaitInput struct {
@@ -85,30 +85,30 @@ type WaitInput struct {
 
 type WaitOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
-type LongpressInput struct {
-	OriginSize []string `json:"originSize" jsonschema:"Original screen size [width, height]"`
-	ScaledSize []string `json:"scaledSize" jsonschema:"Scaled screenshot size [width, height]"`
+type LongPressInput struct {
+	OriginSize []string `json:"origin_size" jsonschema:"Original screen size [width, height]"`
+	ScaledSize []string `json:"scaled_size" jsonschema:"Scaled screenshot size [width, height]"`
 	Coordinate []string `json:"coordinate" jsonschema:"Long press coordinates [x, y]"`
 	Duration   float64  `json:"duration" jsonschema:"Long press duration in seconds (maximum 10 seconds)"`
 }
 
-type LongpressOutput struct {
+type LongPressOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
-type DoubleclickInput struct {
+type DoubleClickInput struct {
 	Coordinate []string `json:"coordinate" jsonschema:"Double click coordinates [x, y]"`
-	OriginSize []string `json:"originSize" jsonschema:"Original screen size [width, height]"`
-	ScaledSize []string `json:"scaledSize" jsonschema:"Scaled screenshot size [width, height]"`
+	OriginSize []string `json:"origin_size" jsonschema:"Original screen size [width, height]"`
+	ScaledSize []string `json:"scaled_size" jsonschema:"Scaled screenshot size [width, height]"`
 }
 
-type DoubleclickOutput struct {
+type DoubleClickOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
 type HomeInput struct {
@@ -116,7 +116,7 @@ type HomeInput struct {
 
 type HomeOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }
 
 type BackInput struct {
@@ -124,5 +124,5 @@ type BackInput struct {
 
 type BackOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 }

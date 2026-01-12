@@ -1,0 +1,31 @@
+go_package = "main"
+
+// Test with snake case tool name
+tool snake_case_tool {
+    description "Test snake case tool name"
+
+    input {
+        snake_field: string "Snake case field" required
+        camelField: string "Camel case field" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
+
+// Test with camel case tool name
+tool CamelCaseTool {
+    description "Test camel case tool name"
+
+    input {
+        snake_field: string "Snake case field" required
+        camelField: string "Camel case field" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+    }
+}
