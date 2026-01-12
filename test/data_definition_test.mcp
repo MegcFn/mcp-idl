@@ -1,0 +1,48 @@
+go_package = "main"
+
+// Define a data type
+data system {
+    currApp: string "当前app" required
+    version: string "版本号" required
+    isActive: bool "是否激活"
+}
+
+// Define another data type
+data user_info {
+    userId: string "用户ID" required
+    userName: string "用户名" required
+    email: string "邮箱"
+    phone: string "手机号"
+    systemInfo: system "系统信息" required
+}
+
+// Tool that uses data types
+tool GetUserInfo {
+    description "Get user information"
+
+    input {
+        userId: string "User ID" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+        userInfo: user_info "User information" required
+        systemInfo: system "System information" required
+    }
+}
+
+// Tool that uses data types
+tool GetSystemInfo {
+    description "Get user information"
+
+    input {
+        userId: string "User ID" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+        systemInfo: system "System information" required
+    }
+}

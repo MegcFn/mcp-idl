@@ -27,6 +27,12 @@ type MCPField struct {
 	Required    bool
 }
 
+// MCPData represents a data type definition
+type MCPData struct {
+	Name   string
+	Fields []MCPField
+}
+
 // MCPTool represents a complete MCP tool definition
 type MCPTool struct {
 	Name        string
@@ -34,6 +40,13 @@ type MCPTool struct {
 	Package     string
 	Input       MCPStruct
 	Output      MCPStruct
+}
+
+// MCPParsedResult represents the parsed result of MCP file
+type MCPParsedResult struct {
+	Tools   []*MCPTool
+	Data    []*MCPData
+	Package string
 }
 
 func main() {
@@ -82,14 +95,14 @@ func generateCodeForFile(filePath, outputFile string) {
 		os.Exit(1)
 	}
 
-	tools, goPackage, err := ParseMCPTools(string(content))
+	tools, dataList, goPackage, err := ParseMCPTools(string(content))
 	if err != nil {
 		fmt.Printf("Error parsing IDL %s: %v\n", filePath, err)
 		os.Exit(1)
 	}
 
 	// Generate Go code
-	goCode := GenerateGoCode(tools, goPackage)
+	goCode := GenerateGoCode(tools, dataList, goPackage)
 
 	// Determine output filename
 	if outputFile == "" {
@@ -137,16 +150,22 @@ func findAllMCPFiles(dir string) ([]string, error) {
 	return mcpFiles, err
 }
 
-// ParseMCPTools parses the MCP tool IDL and returns multiple MCPTool structs and go_package
-func ParseMCPTools(content string) ([]*MCPTool, string, error) {
+// ParseMCPTools parses the MCP tool IDL and returns parsed result
+func ParseMCPTools(content string) ([]*MCPTool, []*MCPData, string, error) {
 	lines := strings.Split(content, "\n")
 	var tools []*MCPTool
+	var dataList []*MCPData
 	var currentTool *MCPTool
+	var currentData *MCPData
 	var goPackage string = "mcp" // Default package
 	var currentSection string
 	var currentStruct *MCPStruct
+	var inDataSection bool
 
 	for i, line := range lines {
+		//fmt.Printf("Line %d: %q, currentTool: %v, currentData: %v, currentSection: %q, inDataSection: %v\n",
+		//	i+1, line, currentTool != nil, currentData != nil, currentSection, inDataSection)
+
 		line = strings.TrimSpace(line)
 		if line == "" || strings.HasPrefix(line, "//") {
 			continue
@@ -161,14 +180,14 @@ func ParseMCPTools(content string) ([]*MCPTool, string, error) {
 				start := strings.Index(line, "\"")
 				end := strings.LastIndex(line, "\"")
 				if start == -1 || end == -1 || start >= end {
-					return nil, "", fmt.Errorf("line %d: invalid go_package format", i+1)
+					return nil, nil, "", fmt.Errorf("line %d: invalid go_package format", i+1)
 				}
 				pkgValue = line[start+1 : end]
 			} else {
 				// Format: package pkg
 				parts := strings.Fields(line)
 				if len(parts) < 2 {
-					return nil, "", fmt.Errorf("line %d: invalid package format", i+1)
+					return nil, nil, "", fmt.Errorf("line %d: invalid package format", i+1)
 				}
 				pkgValue = parts[1]
 			}
@@ -176,10 +195,42 @@ func ParseMCPTools(content string) ([]*MCPTool, string, error) {
 			continue
 		}
 
+		// Check for data declaration with brace
+		if strings.HasPrefix(line, "data ") && strings.HasSuffix(line, " {") {
+			// Format: data system {
+			parts := strings.Fields(line)
+			if len(parts) < 2 {
+				return nil, nil, "", fmt.Errorf("line %d: invalid data declaration", i+1)
+			}
+			// Extract data name (remove trailing brace)
+			dataName := parts[1]
+			dataName = strings.TrimSuffix(dataName, "{")
+			// Create new data type
+			currentData = &MCPData{
+				Name: dataName,
+			}
+			dataList = append(dataList, currentData)
+			inDataSection = true
+			continue
+		}
+
+		if strings.HasPrefix(line, "data") {
+			parts := strings.Fields(line)
+			if len(parts) < 2 {
+				return nil, nil, "", fmt.Errorf("line %d: invalid data declaration", i+1)
+			}
+			// Create new data type
+			currentData = &MCPData{
+				Name: parts[1],
+			}
+			dataList = append(dataList, currentData)
+			continue
+		}
+
 		if strings.HasPrefix(line, "tool") {
 			parts := strings.Fields(line)
 			if len(parts) < 2 {
-				return nil, "", fmt.Errorf("line %d: invalid tool declaration", i+1)
+				return nil, nil, "", fmt.Errorf("line %d: invalid tool declaration", i+1)
 			}
 			// Create new tool
 			currentTool = &MCPTool{
@@ -191,13 +242,13 @@ func ParseMCPTools(content string) ([]*MCPTool, string, error) {
 
 		if strings.HasPrefix(line, "description") {
 			if currentTool == nil {
-				return nil, "", fmt.Errorf("line %d: description before tool declaration", i+1)
+				return nil, nil, "", fmt.Errorf("line %d: description before tool declaration", i+1)
 			}
 			// Extract description between quotes
 			start := strings.Index(line, "\"")
 			end := strings.LastIndex(line, "\"")
 			if start == -1 || end == -1 || start >= end {
-				return nil, "", fmt.Errorf("line %d: invalid description format", i+1)
+				return nil, nil, "", fmt.Errorf("line %d: invalid description format", i+1)
 			}
 			currentTool.Description = line[start+1 : end]
 			continue
@@ -205,21 +256,31 @@ func ParseMCPTools(content string) ([]*MCPTool, string, error) {
 
 		if line == "input {" {
 			if currentTool == nil {
-				return nil, "", fmt.Errorf("line %d: input before tool declaration", i+1)
+				return nil, nil, "", fmt.Errorf("line %d: input before tool declaration", i+1)
 			}
 			currentSection = "input"
 			currentTool.Input.Name = currentTool.Name + "Input"
 			currentStruct = &currentTool.Input
+			inDataSection = false
 			continue
 		}
 
 		if line == "output {" {
 			if currentTool == nil {
-				return nil, "", fmt.Errorf("line %d: output before tool declaration", i+1)
+				return nil, nil, "", fmt.Errorf("line %d: output before tool declaration", i+1)
 			}
 			currentSection = "output"
 			currentTool.Output.Name = currentTool.Name + "Output"
 			currentStruct = &currentTool.Output
+			inDataSection = false
+			continue
+		}
+
+		if line == "{" {
+			if currentData != nil {
+				// Start of data fields section
+				inDataSection = true
+			}
 			continue
 		}
 
@@ -227,20 +288,35 @@ func ParseMCPTools(content string) ([]*MCPTool, string, error) {
 			if currentSection != "" {
 				currentSection = ""
 				currentStruct = nil
+				inDataSection = false
+			} else if inDataSection {
+				// End of data fields section
+				inDataSection = false
+				currentData = nil
 			}
 			continue
 		}
 
 		if currentStruct != nil {
+			// Parse fields in input/output sections
 			field, err := parseField(line)
 			if err != nil {
-				return nil, "", fmt.Errorf("line %d: %w", i+1, err)
+				return nil, nil, "", fmt.Errorf("line %d: %w", i+1, err)
 			}
 			currentStruct.Fields = append(currentStruct.Fields, field)
+		} else if inDataSection && currentData != nil {
+			// Parse fields in data section
+			//fmt.Printf("Parsing data field: %q\n", line)
+			field, err := parseField(line)
+			if err != nil {
+				return nil, nil, "", fmt.Errorf("line %d: %w", i+1, err)
+			}
+			currentData.Fields = append(currentData.Fields, field)
+			//fmt.Printf("Added field %q to data %q\n", field.Name, currentData.Name)
 		}
 	}
 
-	return tools, goPackage, nil
+	return tools, dataList, goPackage, nil
 }
 
 // parseField parses a single field line and returns a MCPField
@@ -368,13 +444,44 @@ func toSnakeCase(s string) string {
 	return result.String()
 }
 
-// GenerateGoCode generates Go code from multiple MCPTool structs
-func GenerateGoCode(tools []*MCPTool, goPackage string) string {
+// GenerateGoCode generates Go code from multiple MCPTool structs and MCPData definitions
+func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) string {
 	var builder strings.Builder
 
 	// Add generated file comment
 	builder.WriteString("// Code generated by mcpidl. DO NOT EDIT.\n\n")
 	builder.WriteString(fmt.Sprintf("package %s\n\n", goPackage))
+
+	// Create a map of data type names to their CamelCase counterparts for quick lookup
+	dataTypeMap := make(map[string]string)
+	for _, data := range dataList {
+		dataTypeMap[data.Name] = toCamelCase(data.Name)
+	}
+
+	// Generate data structs first (so they can be referenced by tool structs)
+	for _, data := range dataList {
+		// Generate data struct with CamelCase
+		dataStructName := toCamelCase(data.Name)
+		builder.WriteString(fmt.Sprintf("type %s struct {\n", dataStructName))
+		for _, field := range data.Fields {
+			// Convert field name to CamelCase
+			fieldName := toCamelCase(field.Name)
+			// Use pointer type for non-required fields
+			fieldType := field.Type
+			// Check if fieldType is a referenced data type and convert to CamelCase
+			if camelType, exists := dataTypeMap[fieldType]; exists {
+				fieldType = camelType
+			}
+			if !field.Required {
+				fieldType = "*" + fieldType
+			}
+			// Convert JSON tag to snake_case
+			jsonTag := toSnakeCase(field.Name)
+			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
+				fieldName, fieldType, jsonTag, field.Description))
+		}
+		builder.WriteString("}\n\n")
+	}
 
 	// Generate constants for each tool
 	for _, tool := range tools {
@@ -391,7 +498,7 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 
 		// Generate description constant: CamelCase(tool.Name) + "Description"
 		descConstName := camelCaseName + "Description"
-		builder.WriteString(fmt.Sprintf("const %s string = \"%s\"\n\n", descConstName, tool.Description))
+		builder.WriteString(fmt.Sprintf("const %s string = `%s`\n\n", descConstName, tool.Description))
 	}
 
 	// Generate structs for each tool
@@ -405,6 +512,10 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 			fieldName := toCamelCase(field.Name)
 			// Use pointer type for non-required fields
 			fieldType := field.Type
+			// Check if fieldType is a referenced data type and convert to CamelCase
+			if camelType, exists := dataTypeMap[fieldType]; exists {
+				fieldType = camelType
+			}
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
@@ -423,6 +534,10 @@ func GenerateGoCode(tools []*MCPTool, goPackage string) string {
 			fieldName := toCamelCase(field.Name)
 			// Use pointer type for non-required fields
 			fieldType := field.Type
+			// Check if fieldType is a referenced data type and convert to CamelCase
+			if camelType, exists := dataTypeMap[fieldType]; exists {
+				fieldType = camelType
+			}
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
