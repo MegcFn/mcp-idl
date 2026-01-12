@@ -382,7 +382,7 @@ func parseField(line string) (MCPField, error) {
 
 	// Remove trailing colon from field name
 	field.Name = strings.TrimSuffix(parts[0], ":")
-	
+
 	// Handle array types: [type] -> []type
 	fieldType := parts[1]
 	if strings.HasPrefix(fieldType, "[") && strings.HasSuffix(fieldType, "]") {
@@ -508,8 +508,11 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to snake_case
+			// Convert JSON tag to snake_case with omitempty for non-required fields
 			jsonTag := toSnakeCase(field.Name)
+			if !field.Required {
+				jsonTag += ",omitempty"
+			}
 			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
 				fieldName, fieldType, jsonTag, field.Description))
 		}
@@ -555,8 +558,11 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to snake_case
+			// Convert JSON tag to snake_case with omitempty for non-required fields
 			jsonTag := toSnakeCase(field.Name)
+			if !field.Required {
+				jsonTag += ",omitempty"
+			}
 			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
 				fieldName, fieldType, jsonTag, field.Description))
 		}
@@ -580,8 +586,11 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to snake_case
+			// Convert JSON tag to snake_case with omitempty for non-required fields
 			jsonTag := toSnakeCase(field.Name)
+			if !field.Required {
+				jsonTag += ",omitempty"
+			}
 			builder.WriteString(fmt.Sprintf("\t%s %s `json:\"%s\" jsonschema:\"%s\"`\n",
 				fieldName, fieldType, jsonTag, field.Description))
 		}

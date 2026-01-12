@@ -2,54 +2,206 @@
 
 package main
 
+const GetVolumeTool string = "get_volume"
+
+const GetVolumeDescription string = `Get current volume level for a stream type`
+
+const SetVolumeTool string = "set_volume"
+
+const SetVolumeDescription string = `Set volume level for a stream type`
+
+const GetRingerModeTool string = "get_ringer_mode"
+
+const GetRingerModeDescription string = `Get current ringer mode`
+
+const SetRingerModeTool string = "set_ringer_mode"
+
+const SetRingerModeDescription string = `Set ringer mode`
+
+const IsMusicActiveTool string = "is_music_active"
+
+const IsMusicActiveDescription string = `Check if music is currently playing`
+
+const GetAudioSystemInfoTool string = "get_audio_system_info"
+
+const GetAudioSystemInfoDescription string = `Get comprehensive audio system information`
+
 type GetVolumeInput struct {
-	StreamType string `json:"streamType" jsonschema:"Stream type: music, ring, alarm, notification, system, voice_call"`
+	StreamType string `json:"stream_type" jsonschema:"Stream type: music, ring, alarm, notification, system, voice_call"`
+}
+
+// GetStreamType returns the value of StreamType field
+func (s GetVolumeInput) GetStreamType() string {
+	return s.StreamType
 }
 
 type GetVolumeOutput struct {
-	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	Success      *bool   `json:"success,omitempty" jsonschema:"Whether the operation succeeded"`
+	ErrorMessage *string `json:"error_message,omitempty" jsonschema:"Error message if operation failed"`
+}
+
+// GetSuccess returns the value of Success field
+func (s GetVolumeOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s GetVolumeOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
 }
 
 type SetVolumeInput struct {
-	StreamType string `json:"streamType" jsonschema:"Stream type"`
+	StreamType string `json:"stream_type" jsonschema:"Stream type"`
 	Volume     int64  `json:"volume" jsonschema:"Volume level"`
 }
 
+// GetStreamType returns the value of StreamType field
+func (s SetVolumeInput) GetStreamType() string {
+	return s.StreamType
+}
+
+// GetVolume returns the value of Volume field
+func (s SetVolumeInput) GetVolume() int64 {
+	return s.Volume
+}
+
 type SetVolumeOutput struct {
-	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	Success      *bool   `json:"success,omitempty" jsonschema:"Whether the operation succeeded"`
+	ErrorMessage *string `json:"error_message,omitempty" jsonschema:"Error message if operation failed"`
+}
+
+// GetSuccess returns the value of Success field
+func (s SetVolumeOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s SetVolumeOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
 }
 
 type GetRingerModeInput struct {
 }
 
 type GetRingerModeOutput struct {
-	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	Success      *bool   `json:"success,omitempty" jsonschema:"Whether the operation succeeded"`
+	ErrorMessage *string `json:"error_message,omitempty" jsonschema:"Error message if operation failed"`
+}
+
+// GetSuccess returns the value of Success field
+func (s GetRingerModeOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s GetRingerModeOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
 }
 
 type SetRingerModeInput struct {
 	Mode string `json:"mode" jsonschema:"Ringer mode: normal, silent, vibrate"`
 }
 
+// GetMode returns the value of Mode field
+func (s SetRingerModeInput) GetMode() string {
+	return s.Mode
+}
+
 type SetRingerModeOutput struct {
-	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	Success      *bool   `json:"success,omitempty" jsonschema:"Whether the operation succeeded"`
+	ErrorMessage *string `json:"error_message,omitempty" jsonschema:"Error message if operation failed"`
+}
+
+// GetSuccess returns the value of Success field
+func (s SetRingerModeOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s SetRingerModeOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
 }
 
 type IsMusicActiveInput struct {
 }
 
 type IsMusicActiveOutput struct {
-	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	Success      *bool   `json:"success,omitempty" jsonschema:"Whether the operation succeeded"`
+	ErrorMessage *string `json:"error_message,omitempty" jsonschema:"Error message if operation failed"`
+}
+
+// GetSuccess returns the value of Success field
+func (s IsMusicActiveOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s IsMusicActiveOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
 }
 
 type GetAudioSystemInfoInput struct {
 }
 
 type GetAudioSystemInfoOutput struct {
-	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
-	ErrorMessage *string `json:"errorMessage" jsonschema:"Error message if operation failed"`
+	Success      *bool   `json:"success,omitempty" jsonschema:"Whether the operation succeeded"`
+	ErrorMessage *string `json:"error_message,omitempty" jsonschema:"Error message if operation failed"`
+}
+
+// GetSuccess returns the value of Success field
+func (s GetAudioSystemInfoOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s GetAudioSystemInfoOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
 }
