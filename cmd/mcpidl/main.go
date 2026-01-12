@@ -509,6 +509,9 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 				fieldName, fieldType, jsonTag, field.Description))
 		}
 		builder.WriteString("}\n\n")
+
+		// Generate getter methods for data struct
+		generateGetterMethods(&builder, dataStructName, data.Fields, dataTypeMap)
 	}
 
 	// Generate constants for each tool
@@ -554,6 +557,9 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 		}
 		builder.WriteString("}\n\n")
 
+		// Generate getter methods for input struct
+		generateGetterMethods(&builder, inputStructName, tool.Input.Fields, dataTypeMap)
+
 		// Generate output struct with proper CamelCase
 		outputStructName := toCamelCase(tool.Name) + "Output"
 		builder.WriteString(fmt.Sprintf("type %s struct {\n", outputStructName))
@@ -575,6 +581,9 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 				fieldName, fieldType, jsonTag, field.Description))
 		}
 		builder.WriteString("}\n\n")
+
+		// Generate getter methods for output struct
+		generateGetterMethods(&builder, outputStructName, tool.Output.Fields, dataTypeMap)
 	}
 
 	// Format the code with gofmt
@@ -585,4 +594,46 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 	}
 
 	return string(formattedCode)
+}
+
+// generateGetterMethods generates getter methods for all fields in a struct
+func generateGetterMethods(builder *strings.Builder, structName string, fields []MCPField, dataTypeMap map[string]string) {
+	for _, field := range fields {
+		fieldName := toCamelCase(field.Name)
+		fieldType := field.Type
+
+		// Check if fieldType is a referenced data type and convert to CamelCase
+		if camelType, exists := dataTypeMap[fieldType]; exists {
+			fieldType = camelType
+		}
+
+		// Determine if the field is a pointer type in the struct
+		// Non-required fields are pointer types in the generated struct
+		isPointerField := !field.Required
+
+		// Determine actual field type (pointer or non-pointer)
+		actualType := fieldType
+
+		// Generate getter method name: GetFieldName
+		getterName := "Get" + fieldName
+
+		// Generate getter method signature
+		if isPointerField {
+			// Getter for pointer field returns non-pointer value
+			builder.WriteString(fmt.Sprintf("// %s returns the value of %s field\n", getterName, fieldName))
+			builder.WriteString(fmt.Sprintf("func (s *%s) %s() %s {\n", structName, getterName, actualType))
+			builder.WriteString(fmt.Sprintf("\tif s.%s == nil {\n", fieldName))
+			builder.WriteString(fmt.Sprintf("\t\tvar zero %s\n", actualType))
+			builder.WriteString(fmt.Sprintf("\t\treturn zero\n"))
+			builder.WriteString(fmt.Sprintf("\t}\n"))
+			builder.WriteString(fmt.Sprintf("\treturn *s.%s\n", fieldName))
+			builder.WriteString(fmt.Sprintf("}\n\n"))
+		} else {
+			// Getter for non-pointer field returns the value directly
+			builder.WriteString(fmt.Sprintf("// %s returns the value of %s field\n", getterName, fieldName))
+			builder.WriteString(fmt.Sprintf("func (s *%s) %s() %s {\n", structName, getterName, actualType))
+			builder.WriteString(fmt.Sprintf("\treturn s.%s\n", fieldName))
+			builder.WriteString(fmt.Sprintf("}\n\n"))
+		}
+	}
 }

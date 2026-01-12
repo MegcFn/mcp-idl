@@ -8,12 +8,64 @@ type System struct {
 	IsActive *bool  `json:"is_active" jsonschema:"是否激活"`
 }
 
+// GetCurrApp returns the value of CurrApp field
+func (s *System) GetCurrApp() string {
+	return s.CurrApp
+}
+
+// GetVersion returns the value of Version field
+func (s *System) GetVersion() string {
+	return s.Version
+}
+
+// GetIsActive returns the value of IsActive field
+func (s *System) GetIsActive() bool {
+	if s.IsActive == nil {
+		var zero bool
+		return zero
+	}
+	return *s.IsActive
+}
+
 type UserInfo struct {
 	UserId     string  `json:"user_id" jsonschema:"用户ID"`
 	UserName   string  `json:"user_name" jsonschema:"用户名"`
 	Email      *string `json:"email" jsonschema:"邮箱"`
 	Phone      *string `json:"phone" jsonschema:"手机号"`
 	SystemInfo System  `json:"system_info" jsonschema:"系统信息"`
+}
+
+// GetUserId returns the value of UserId field
+func (s *UserInfo) GetUserId() string {
+	return s.UserId
+}
+
+// GetUserName returns the value of UserName field
+func (s *UserInfo) GetUserName() string {
+	return s.UserName
+}
+
+// GetEmail returns the value of Email field
+func (s *UserInfo) GetEmail() string {
+	if s.Email == nil {
+		var zero string
+		return zero
+	}
+	return *s.Email
+}
+
+// GetPhone returns the value of Phone field
+func (s *UserInfo) GetPhone() string {
+	if s.Phone == nil {
+		var zero string
+		return zero
+	}
+	return *s.Phone
+}
+
+// GetSystemInfo returns the value of SystemInfo field
+func (s *UserInfo) GetSystemInfo() System {
+	return s.SystemInfo
 }
 
 const GetUserInfoTool string = "get_user_info"
@@ -28,6 +80,11 @@ type GetUserInfoInput struct {
 	UserId string `json:"user_id" jsonschema:"User ID"`
 }
 
+// GetUserId returns the value of UserId field
+func (s *GetUserInfoInput) GetUserId() string {
+	return s.UserId
+}
+
 type GetUserInfoOutput struct {
 	Success      *bool    `json:"success" jsonschema:"Whether the operation succeeded"`
 	ErrorMessage *string  `json:"error_message" jsonschema:"Error message if operation failed"`
@@ -35,12 +92,68 @@ type GetUserInfoOutput struct {
 	SystemInfo   System   `json:"system_info" jsonschema:"System information"`
 }
 
+// GetSuccess returns the value of Success field
+func (s *GetUserInfoOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s *GetUserInfoOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
+}
+
+// GetUserInfo returns the value of UserInfo field
+func (s *GetUserInfoOutput) GetUserInfo() UserInfo {
+	return s.UserInfo
+}
+
+// GetSystemInfo returns the value of SystemInfo field
+func (s *GetUserInfoOutput) GetSystemInfo() System {
+	return s.SystemInfo
+}
+
 type GetSystemInfoInput struct {
 	UserId string `json:"user_id" jsonschema:"User ID"`
+}
+
+// GetUserId returns the value of UserId field
+func (s *GetSystemInfoInput) GetUserId() string {
+	return s.UserId
 }
 
 type GetSystemInfoOutput struct {
 	Success      *bool   `json:"success" jsonschema:"Whether the operation succeeded"`
 	ErrorMessage *string `json:"error_message" jsonschema:"Error message if operation failed"`
 	SystemInfo   System  `json:"system_info" jsonschema:"System information"`
+}
+
+// GetSuccess returns the value of Success field
+func (s *GetSystemInfoOutput) GetSuccess() bool {
+	if s.Success == nil {
+		var zero bool
+		return zero
+	}
+	return *s.Success
+}
+
+// GetErrorMessage returns the value of ErrorMessage field
+func (s *GetSystemInfoOutput) GetErrorMessage() string {
+	if s.ErrorMessage == nil {
+		var zero string
+		return zero
+	}
+	return *s.ErrorMessage
+}
+
+// GetSystemInfo returns the value of SystemInfo field
+func (s *GetSystemInfoOutput) GetSystemInfo() System {
+	return s.SystemInfo
 }
