@@ -1,0 +1,21 @@
+go_package = "main"
+
+// Test with multiline description
+tool CaptureScreenshot {
+    description "Capture a screenshot from the Android device and return it as an image. 
+  
+  **Output:** Returns the screenshot as an image. The screenshot is automatically captured from the Android device via ADB, with the shortest side resized to 512px for efficient transmission. 
+  
+  **Notes:** 
+   - A screenshot is automatically captured after the operation completes, with the shortest side resized to 512px." 
+
+    input {
+        deviceId: string "Device ID" required
+    }
+
+    output {
+        success: bool "Whether the operation succeeded"
+        error_message: string "Error message if operation failed"
+        image: string "Base64 encoded image"
+    }
+}

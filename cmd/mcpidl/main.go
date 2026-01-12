@@ -244,13 +244,41 @@ func ParseMCPTools(content string) ([]*MCPTool, []*MCPData, string, error) {
 			if currentTool == nil {
 				return nil, nil, "", fmt.Errorf("line %d: description before tool declaration", i+1)
 			}
-			// Extract description between quotes
+			// Extract description between quotes, handle multiline
 			start := strings.Index(line, "\"")
-			end := strings.LastIndex(line, "\"")
-			if start == -1 || end == -1 || start >= end {
+			if start == -1 {
 				return nil, nil, "", fmt.Errorf("line %d: invalid description format", i+1)
 			}
-			currentTool.Description = line[start+1 : end]
+
+			// Check if description ends on the same line
+			end := strings.LastIndex(line, "\"")
+			if end > start {
+				// Single line description
+				currentTool.Description = line[start+1 : end]
+			} else {
+				// Multiline description - read until closing quote
+				var descriptionBuilder strings.Builder
+				// Add the first line after opening quote
+				descriptionBuilder.WriteString(line[start+1:])
+
+				// Continue reading lines until closing quote
+				for j := i + 1; j < len(lines); j++ {
+					nextLine := lines[j]
+					endQuote := strings.Index(nextLine, "\"")
+					if endQuote != -1 {
+						// Found closing quote, add up to that point
+						descriptionBuilder.WriteString("\n")
+						descriptionBuilder.WriteString(nextLine[:endQuote])
+						// Update current line index to j since we've processed these lines
+						i = j
+						break
+					}
+					// No closing quote yet, add entire line
+					descriptionBuilder.WriteString("\n")
+					descriptionBuilder.WriteString(nextLine)
+				}
+				currentTool.Description = descriptionBuilder.String()
+			}
 			continue
 		}
 
