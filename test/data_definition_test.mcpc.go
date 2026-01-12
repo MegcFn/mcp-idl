@@ -9,17 +9,17 @@ type System struct {
 }
 
 // GetCurrApp returns the value of CurrApp field
-func (s *System) GetCurrApp() string {
+func (s System) GetCurrApp() string {
 	return s.CurrApp
 }
 
 // GetVersion returns the value of Version field
-func (s *System) GetVersion() string {
+func (s System) GetVersion() string {
 	return s.Version
 }
 
 // GetIsActive returns the value of IsActive field
-func (s *System) GetIsActive() bool {
+func (s System) GetIsActive() bool {
 	if s.IsActive == nil {
 		var zero bool
 		return zero
@@ -36,17 +36,17 @@ type UserInfo struct {
 }
 
 // GetUserId returns the value of UserId field
-func (s *UserInfo) GetUserId() string {
+func (s UserInfo) GetUserId() string {
 	return s.UserId
 }
 
 // GetUserName returns the value of UserName field
-func (s *UserInfo) GetUserName() string {
+func (s UserInfo) GetUserName() string {
 	return s.UserName
 }
 
 // GetEmail returns the value of Email field
-func (s *UserInfo) GetEmail() string {
+func (s UserInfo) GetEmail() string {
 	if s.Email == nil {
 		var zero string
 		return zero
@@ -55,7 +55,7 @@ func (s *UserInfo) GetEmail() string {
 }
 
 // GetPhone returns the value of Phone field
-func (s *UserInfo) GetPhone() string {
+func (s UserInfo) GetPhone() string {
 	if s.Phone == nil {
 		var zero string
 		return zero
@@ -64,7 +64,7 @@ func (s *UserInfo) GetPhone() string {
 }
 
 // GetSystemInfo returns the value of SystemInfo field
-func (s *UserInfo) GetSystemInfo() System {
+func (s UserInfo) GetSystemInfo() System {
 	return s.SystemInfo
 }
 
@@ -81,7 +81,7 @@ type GetUserInfoInput struct {
 }
 
 // GetUserId returns the value of UserId field
-func (s *GetUserInfoInput) GetUserId() string {
+func (s GetUserInfoInput) GetUserId() string {
 	return s.UserId
 }
 
@@ -93,7 +93,7 @@ type GetUserInfoOutput struct {
 }
 
 // GetSuccess returns the value of Success field
-func (s *GetUserInfoOutput) GetSuccess() bool {
+func (s GetUserInfoOutput) GetSuccess() bool {
 	if s.Success == nil {
 		var zero bool
 		return zero
@@ -102,7 +102,7 @@ func (s *GetUserInfoOutput) GetSuccess() bool {
 }
 
 // GetErrorMessage returns the value of ErrorMessage field
-func (s *GetUserInfoOutput) GetErrorMessage() string {
+func (s GetUserInfoOutput) GetErrorMessage() string {
 	if s.ErrorMessage == nil {
 		var zero string
 		return zero
@@ -111,12 +111,12 @@ func (s *GetUserInfoOutput) GetErrorMessage() string {
 }
 
 // GetUserInfo returns the value of UserInfo field
-func (s *GetUserInfoOutput) GetUserInfo() UserInfo {
+func (s GetUserInfoOutput) GetUserInfo() UserInfo {
 	return s.UserInfo
 }
 
 // GetSystemInfo returns the value of SystemInfo field
-func (s *GetUserInfoOutput) GetSystemInfo() System {
+func (s GetUserInfoOutput) GetSystemInfo() System {
 	return s.SystemInfo
 }
 
@@ -125,7 +125,7 @@ type GetSystemInfoInput struct {
 }
 
 // GetUserId returns the value of UserId field
-func (s *GetSystemInfoInput) GetUserId() string {
+func (s GetSystemInfoInput) GetUserId() string {
 	return s.UserId
 }
 
@@ -136,7 +136,7 @@ type GetSystemInfoOutput struct {
 }
 
 // GetSuccess returns the value of Success field
-func (s *GetSystemInfoOutput) GetSuccess() bool {
+func (s GetSystemInfoOutput) GetSuccess() bool {
 	if s.Success == nil {
 		var zero bool
 		return zero
@@ -145,7 +145,7 @@ func (s *GetSystemInfoOutput) GetSuccess() bool {
 }
 
 // GetErrorMessage returns the value of ErrorMessage field
-func (s *GetSystemInfoOutput) GetErrorMessage() string {
+func (s GetSystemInfoOutput) GetErrorMessage() string {
 	if s.ErrorMessage == nil {
 		var zero string
 		return zero
@@ -154,6 +154,6 @@ func (s *GetSystemInfoOutput) GetErrorMessage() string {
 }
 
 // GetSystemInfo returns the value of SystemInfo field
-func (s *GetSystemInfoOutput) GetSystemInfo() System {
+func (s GetSystemInfoOutput) GetSystemInfo() System {
 	return s.SystemInfo
 }

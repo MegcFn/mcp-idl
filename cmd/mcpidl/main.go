@@ -617,11 +617,11 @@ func generateGetterMethods(builder *strings.Builder, structName string, fields [
 		// Generate getter method name: GetFieldName
 		getterName := "Get" + fieldName
 
-		// Generate getter method signature
+		// Generate getter method signature with value receiver instead of pointer receiver
 		if isPointerField {
 			// Getter for pointer field returns non-pointer value
 			builder.WriteString(fmt.Sprintf("// %s returns the value of %s field\n", getterName, fieldName))
-			builder.WriteString(fmt.Sprintf("func (s *%s) %s() %s {\n", structName, getterName, actualType))
+			builder.WriteString(fmt.Sprintf("func (s %s) %s() %s {\n", structName, getterName, actualType))
 			builder.WriteString(fmt.Sprintf("\tif s.%s == nil {\n", fieldName))
 			builder.WriteString(fmt.Sprintf("\t\tvar zero %s\n", actualType))
 			builder.WriteString(fmt.Sprintf("\t\treturn zero\n"))
@@ -631,7 +631,7 @@ func generateGetterMethods(builder *strings.Builder, structName string, fields [
 		} else {
 			// Getter for non-pointer field returns the value directly
 			builder.WriteString(fmt.Sprintf("// %s returns the value of %s field\n", getterName, fieldName))
-			builder.WriteString(fmt.Sprintf("func (s *%s) %s() %s {\n", structName, getterName, actualType))
+			builder.WriteString(fmt.Sprintf("func (s %s) %s() %s {\n", structName, getterName, actualType))
 			builder.WriteString(fmt.Sprintf("\treturn s.%s\n", fieldName))
 			builder.WriteString(fmt.Sprintf("}\n\n"))
 		}
