@@ -351,27 +351,44 @@ func ParseMCPTools(content string) ([]*MCPTool, []*MCPData, string, error) {
 func parseField(line string) (MCPField, error) {
 	var field MCPField
 
-	// Split into parts, handling quoted description
+	// Split into parts, handling quoted description with escaped quotes
 	var parts []string
 	inQuote := false
 	current := ""
+	escaped := false
 
 	for _, char := range line {
+		if escaped {
+			// Previous character was a backslash, this character is escaped
+			current += string(char)
+			escaped = false
+			continue
+		}
+
 		switch char {
+		case '\\':
+			// Start of escape sequence
+			current += string(char)
+			escaped = true
 		case '"':
+			// Toggle quote state for quoted description
 			inQuote = !inQuote
 			current += string(char)
 		case ' ':
 			if inQuote {
+				// Inside quote, keep space
 				current += string(char)
 			} else if current != "" {
+				// Outside quote, add current part and reset
 				parts = append(parts, current)
 				current = ""
 			}
 		default:
+			// Regular character, add to current part
 			current += string(char)
 		}
 	}
+	// Add the last part if any
 	if current != "" {
 		parts = append(parts, current)
 	}
@@ -398,15 +415,31 @@ func parseField(line string) (MCPField, error) {
 		}
 	}
 
-	// Extract description from quoted string
+	// Extract description from quoted string (combine all parts after type that contain quotes)
+	var descriptionBuilder strings.Builder
+	inDescription := false
 	for _, part := range parts[2:] {
-		if strings.HasPrefix(part, "\"") {
-			start := strings.Index(part, "\"")
-			end := strings.LastIndex(part, "\"")
-			if start != -1 && end != -1 && start < end {
-				field.Description = part[start+1 : end]
+		if !inDescription {
+			if strings.Contains(part, "\"") {
+				// Start of description
+				inDescription = true
 			}
-			break
+		}
+		if inDescription {
+			descriptionBuilder.WriteString(part)
+			descriptionBuilder.WriteString(" ")
+		}
+	}
+	descriptionStr := strings.TrimSpace(descriptionBuilder.String())
+
+	// Extract the content between the first and last quote
+	if len(descriptionStr) > 0 {
+		startQuote := strings.Index(descriptionStr, "\"")
+		if startQuote != -1 {
+			endQuote := strings.LastIndex(descriptionStr, "\"")
+			if endQuote > startQuote {
+				field.Description = descriptionStr[startQuote+1 : endQuote]
+			}
 		}
 	}
 
@@ -537,8 +570,26 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 
 		// Generate description constant: CamelCase(tool.Name) + "Description"
 		descConstName := camelCaseName + "Description"
-		// Escape only double quotes, keep \n and \t as-is
-		builder.WriteString(fmt.Sprintf("const %s string = \"%s\"\n\n", descConstName, tool.Description))
+		// Escape only unescaped double quotes, preserve already escaped quotes
+		var escapedDesc strings.Builder
+		for i := 0; i < len(tool.Description); i++ {
+			char := tool.Description[i]
+			if char == '"' {
+				// Check if this quote is already escaped
+				if i > 0 && tool.Description[i-1] == '\\' {
+					// Already escaped, write as-is
+					escapedDesc.WriteByte(char)
+				} else {
+					// Need to escape this quote
+					escapedDesc.WriteByte('\\')
+					escapedDesc.WriteByte(char)
+				}
+			} else {
+				// Write other characters as-is
+				escapedDesc.WriteByte(char)
+			}
+		}
+		builder.WriteString(fmt.Sprintf("const %s string = \"%s\"\n\n", descConstName, escapedDesc.String()))
 	}
 
 	// Generate structs for each tool

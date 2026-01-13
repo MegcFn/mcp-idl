@@ -4,27 +4,27 @@ package main
 
 const GetVolumeTool string = "get_volume"
 
-const GetVolumeDescription string = `Get current volume level for a stream type`
+const GetVolumeDescription string = "Get current volume level for a stream type"
 
 const SetVolumeTool string = "set_volume"
 
-const SetVolumeDescription string = `Set volume level for a stream type`
+const SetVolumeDescription string = "Set volume level for a stream type"
 
 const GetRingerModeTool string = "get_ringer_mode"
 
-const GetRingerModeDescription string = `Get current ringer mode`
+const GetRingerModeDescription string = "Get current ringer mode"
 
 const SetRingerModeTool string = "set_ringer_mode"
 
-const SetRingerModeDescription string = `Set ringer mode`
+const SetRingerModeDescription string = "Set ringer mode"
 
 const IsMusicActiveTool string = "is_music_active"
 
-const IsMusicActiveDescription string = `Check if music is currently playing`
+const IsMusicActiveDescription string = "Check if music is currently playing"
 
 const GetAudioSystemInfoTool string = "get_audio_system_info"
 
-const GetAudioSystemInfoDescription string = `Get comprehensive audio system information`
+const GetAudioSystemInfoDescription string = "Get comprehensive audio system information"
 
 type GetVolumeInput struct {
 	StreamType string `json:"stream_type" jsonschema:"Stream type: music, ring, alarm, notification, system, voice_call"`

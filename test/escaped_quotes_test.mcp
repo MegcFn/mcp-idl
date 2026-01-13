@@ -1,0 +1,16 @@
+go_package = "main"
+
+tool test_escaped_quotes {
+    description "This is a tool with \"escaped quotes\" and unescaped quotes"
+
+
+input {
+    field1: string "This field has \"escaped quotes\" and normal text" required
+    field2: string "This field has unescaped \"quotes\" and \n newlines" optional
+    field3: string "This field has \t tabs and \"escaped quotes\"" required
+}
+
+output {
+    result: string "Result with \"escaped quotes\""
+}
+}
