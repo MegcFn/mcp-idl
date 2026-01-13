@@ -537,7 +537,8 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 
 		// Generate description constant: CamelCase(tool.Name) + "Description"
 		descConstName := camelCaseName + "Description"
-		builder.WriteString(fmt.Sprintf("const %s string = `%s`\n\n", descConstName, tool.Description))
+		// Escape only double quotes, keep \n and \t as-is
+		builder.WriteString(fmt.Sprintf("const %s string = \"%s\"\n\n", descConstName, tool.Description))
 	}
 
 	// Generate structs for each tool

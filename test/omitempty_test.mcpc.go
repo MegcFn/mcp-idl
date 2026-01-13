@@ -4,7 +4,7 @@ package main
 
 const TestOmitemptyTool string = "test_omitempty"
 
-const TestOmitemptyDescription string = `Test omitempty functionality`
+const TestOmitemptyDescription string = "Test omitempty functionality"
 
 type TestOmitemptyInput struct {
 	RequiredField string          `json:"required_field" jsonschema:"Required field"`

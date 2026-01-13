@@ -1,0 +1,13 @@
+go_package = "main"
+
+tool test_multiline_desc {
+    description "This is a multiline description. It contains multiple lines and \"quoted\" text. It also has special `characters` like \n and \t. This should be properly escaped when using double quotes."
+    
+    input {
+        field1: string "Field 1" required
+    }
+    
+    output {
+        result: bool "Result"
+    }
+}

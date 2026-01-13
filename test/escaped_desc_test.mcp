@@ -1,0 +1,13 @@
+go_package = "main"
+
+tool test_escaped_desc {
+    description "This description has \"double quotes\", \nnewlines, and \ttabs."
+    
+    input {
+        field1: string "Field 1" required
+    }
+    
+    output {
+        result: bool "Result"
+    }
+}
