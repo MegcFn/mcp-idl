@@ -541,8 +541,8 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to snake_case with omitempty for non-required fields
-			jsonTag := toSnakeCase(field.Name)
+			// Use original field name for JSON tag, add omitempty for non-required fields
+			jsonTag := field.Name
 			if !field.Required {
 				jsonTag += ",omitempty"
 			}
@@ -610,8 +610,8 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to snake_case with omitempty for non-required fields
-			jsonTag := toSnakeCase(field.Name)
+			// Use original field name for JSON tag, add omitempty for non-required fields
+			jsonTag := field.Name
 			if !field.Required {
 				jsonTag += ",omitempty"
 			}
@@ -638,8 +638,8 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			if !field.Required {
 				fieldType = "*" + fieldType
 			}
-			// Convert JSON tag to snake_case with omitempty for non-required fields
-			jsonTag := toSnakeCase(field.Name)
+			// Use original field name for JSON tag, add omitempty for non-required fields
+			jsonTag := field.Name
 			if !field.Required {
 				jsonTag += ",omitempty"
 			}

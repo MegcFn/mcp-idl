@@ -1,0 +1,26 @@
+go_package = "main"
+
+tool test_json_tag {
+    description "Test JSON tag generation"
+    
+    input {
+        current_app: string "Current application name" required
+        user_id: int64 "User ID" required
+        is_active: bool "Is active" optional
+        app_version: string "Application version" optional
+    }
+    
+    output {
+        result_code: int32 "Result code" required
+        error_message: string "Error message" optional
+        user_info: object "User information" required
+        app_list: [string] "Application list" optional
+    }
+}
+
+data test_data {
+    field_one: string "Field one" required
+    field_two: int64 "Field two" optional
+    nested_data: object "Nested data" required
+    string_array: [string] "String array" optional
+}
