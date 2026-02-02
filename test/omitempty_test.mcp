@@ -12,6 +12,6 @@ tool test_omitempty {
     
     output {
         required_output: string "Required output field" required
-        optional_output: string "Optional output field"
+        optional_output: string "Optional output field" required
     }
 }

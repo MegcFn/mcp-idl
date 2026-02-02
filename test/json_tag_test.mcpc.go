@@ -4,9 +4,9 @@ package main
 
 type TestData struct {
 	FieldOne    string         `json:"field_one" jsonschema:"Field one"`
-	FieldTwo    *int64         `json:"field_two,omitempty" jsonschema:"Field two"`
+	FieldTwo    int64          `json:"field_two,omitempty" jsonschema:"Field two"`
 	NestedData  map[string]any `json:"nested_data" jsonschema:"Nested data"`
-	StringArray *[]string      `json:"string_array,omitempty" jsonschema:"String array"`
+	StringArray []string       `json:"string_array,omitempty" jsonschema:"String array"`
 }
 
 // GetFieldOne returns the value of FieldOne field
@@ -16,11 +16,7 @@ func (s TestData) GetFieldOne() string {
 
 // GetFieldTwo returns the value of FieldTwo field
 func (s TestData) GetFieldTwo() int64 {
-	if s.FieldTwo == nil {
-		var zero int64
-		return zero
-	}
-	return *s.FieldTwo
+	return s.FieldTwo
 }
 
 // GetNestedData returns the value of NestedData field
@@ -30,11 +26,7 @@ func (s TestData) GetNestedData() map[string]any {
 
 // GetStringArray returns the value of StringArray field
 func (s TestData) GetStringArray() []string {
-	if s.StringArray == nil {
-		var zero []string
-		return zero
-	}
-	return *s.StringArray
+	return s.StringArray
 }
 
 const TestJsonTagTool string = "test_json_tag"
@@ -42,10 +34,10 @@ const TestJsonTagTool string = "test_json_tag"
 const TestJsonTagDescription string = "Test JSON tag generation"
 
 type TestJsonTagInput struct {
-	CurrentApp string  `json:"current_app" jsonschema:"Current application name"`
-	UserId     int64   `json:"user_id" jsonschema:"User ID"`
-	IsActive   *bool   `json:"is_active,omitempty" jsonschema:"Is active"`
-	AppVersion *string `json:"app_version,omitempty" jsonschema:"Application version"`
+	CurrentApp string `json:"current_app" jsonschema:"Current application name"`
+	UserId     int64  `json:"user_id" jsonschema:"User ID"`
+	IsActive   bool   `json:"is_active,omitempty" jsonschema:"Is active"`
+	AppVersion string `json:"app_version,omitempty" jsonschema:"Application version"`
 }
 
 // GetCurrentApp returns the value of CurrentApp field
@@ -60,27 +52,19 @@ func (s TestJsonTagInput) GetUserId() int64 {
 
 // GetIsActive returns the value of IsActive field
 func (s TestJsonTagInput) GetIsActive() bool {
-	if s.IsActive == nil {
-		var zero bool
-		return zero
-	}
-	return *s.IsActive
+	return s.IsActive
 }
 
 // GetAppVersion returns the value of AppVersion field
 func (s TestJsonTagInput) GetAppVersion() string {
-	if s.AppVersion == nil {
-		var zero string
-		return zero
-	}
-	return *s.AppVersion
+	return s.AppVersion
 }
 
 type TestJsonTagOutput struct {
 	ResultCode   int32          `json:"result_code" jsonschema:"Result code"`
-	ErrorMessage *string        `json:"error_message,omitempty" jsonschema:"Error message"`
+	ErrorMessage string         `json:"error_message,omitempty" jsonschema:"Error message"`
 	UserInfo     map[string]any `json:"user_info" jsonschema:"User information"`
-	AppList      *[]string      `json:"app_list,omitempty" jsonschema:"Application list"`
+	AppList      []string       `json:"app_list,omitempty" jsonschema:"Application list"`
 }
 
 // GetResultCode returns the value of ResultCode field
@@ -90,11 +74,7 @@ func (s TestJsonTagOutput) GetResultCode() int32 {
 
 // GetErrorMessage returns the value of ErrorMessage field
 func (s TestJsonTagOutput) GetErrorMessage() string {
-	if s.ErrorMessage == nil {
-		var zero string
-		return zero
-	}
-	return *s.ErrorMessage
+	return s.ErrorMessage
 }
 
 // GetUserInfo returns the value of UserInfo field
@@ -104,9 +84,5 @@ func (s TestJsonTagOutput) GetUserInfo() map[string]any {
 
 // GetAppList returns the value of AppList field
 func (s TestJsonTagOutput) GetAppList() []string {
-	if s.AppList == nil {
-		var zero []string
-		return zero
-	}
-	return *s.AppList
+	return s.AppList
 }

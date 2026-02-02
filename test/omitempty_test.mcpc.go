@@ -7,10 +7,10 @@ const TestOmitemptyTool string = "test_omitempty"
 const TestOmitemptyDescription string = "Test omitempty functionality"
 
 type TestOmitemptyInput struct {
-	RequiredField string          `json:"required_field" jsonschema:"Required field"`
-	OptionalField *string         `json:"optional_field,omitempty" jsonschema:"Optional field"`
-	ArrayField    *[]string       `json:"array_field,omitempty" jsonschema:"Array field"`
-	ObjectField   *map[string]any `json:"object_field,omitempty" jsonschema:"Object field"`
+	RequiredField string         `json:"required_field" jsonschema:"Required field"`
+	OptionalField string         `json:"optional_field,omitempty" jsonschema:"Optional field"`
+	ArrayField    []string       `json:"array_field,omitempty" jsonschema:"Array field"`
+	ObjectField   map[string]any `json:"object_field,omitempty" jsonschema:"Object field"`
 }
 
 // GetRequiredField returns the value of RequiredField field
@@ -20,34 +20,22 @@ func (s TestOmitemptyInput) GetRequiredField() string {
 
 // GetOptionalField returns the value of OptionalField field
 func (s TestOmitemptyInput) GetOptionalField() string {
-	if s.OptionalField == nil {
-		var zero string
-		return zero
-	}
-	return *s.OptionalField
+	return s.OptionalField
 }
 
 // GetArrayField returns the value of ArrayField field
 func (s TestOmitemptyInput) GetArrayField() []string {
-	if s.ArrayField == nil {
-		var zero []string
-		return zero
-	}
-	return *s.ArrayField
+	return s.ArrayField
 }
 
 // GetObjectField returns the value of ObjectField field
 func (s TestOmitemptyInput) GetObjectField() map[string]any {
-	if s.ObjectField == nil {
-		var zero map[string]any
-		return zero
-	}
-	return *s.ObjectField
+	return s.ObjectField
 }
 
 type TestOmitemptyOutput struct {
-	RequiredOutput string  `json:"required_output" jsonschema:"Required output field"`
-	OptionalOutput *string `json:"optional_output,omitempty" jsonschema:"Optional output field"`
+	RequiredOutput string `json:"required_output" jsonschema:"Required output field"`
+	OptionalOutput string `json:"optional_output" jsonschema:"Optional output field"`
 }
 
 // GetRequiredOutput returns the value of RequiredOutput field
@@ -57,9 +45,5 @@ func (s TestOmitemptyOutput) GetRequiredOutput() string {
 
 // GetOptionalOutput returns the value of OptionalOutput field
 func (s TestOmitemptyOutput) GetOptionalOutput() string {
-	if s.OptionalOutput == nil {
-		var zero string
-		return zero
-	}
-	return *s.OptionalOutput
+	return s.OptionalOutput
 }

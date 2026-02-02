@@ -535,11 +535,11 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			// Use pointer type for non-required fields
 			fieldType := field.Type
 			// Check if fieldType is a referenced data type and convert to CamelCase
-			if camelType, exists := dataTypeMap[fieldType]; exists {
-				fieldType = camelType
-			}
-			if !field.Required {
-				fieldType = "*" + fieldType
+			// Skip conversion for built-in types and special types like map[string]any
+			if fieldType != "map[string]any" && fieldType != "string" && fieldType != "int32" && fieldType != "int64" && fieldType != "bool" && !strings.HasPrefix(fieldType, "[]") {
+				if camelType, exists := dataTypeMap[fieldType]; exists {
+					fieldType = camelType
+				}
 			}
 			// Use original field name for JSON tag, add omitempty for non-required fields
 			jsonTag := field.Name
@@ -604,11 +604,11 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			// Use pointer type for non-required fields
 			fieldType := field.Type
 			// Check if fieldType is a referenced data type and convert to CamelCase
-			if camelType, exists := dataTypeMap[fieldType]; exists {
-				fieldType = camelType
-			}
-			if !field.Required {
-				fieldType = "*" + fieldType
+			// Skip conversion for built-in types and special types like map[string]any
+			if fieldType != "map[string]any" && fieldType != "string" && fieldType != "int32" && fieldType != "int64" && fieldType != "bool" && !strings.HasPrefix(fieldType, "[]") {
+				if camelType, exists := dataTypeMap[fieldType]; exists {
+					fieldType = camelType
+				}
 			}
 			// Use original field name for JSON tag, add omitempty for non-required fields
 			jsonTag := field.Name
@@ -632,11 +632,11 @@ func GenerateGoCode(tools []*MCPTool, dataList []*MCPData, goPackage string) str
 			// Use pointer type for non-required fields
 			fieldType := field.Type
 			// Check if fieldType is a referenced data type and convert to CamelCase
-			if camelType, exists := dataTypeMap[fieldType]; exists {
-				fieldType = camelType
-			}
-			if !field.Required {
-				fieldType = "*" + fieldType
+			// Skip conversion for built-in types and special types like map[string]any
+			if fieldType != "map[string]any" && fieldType != "string" && fieldType != "int32" && fieldType != "int64" && fieldType != "bool" && !strings.HasPrefix(fieldType, "[]") {
+				if camelType, exists := dataTypeMap[fieldType]; exists {
+					fieldType = camelType
+				}
 			}
 			// Use original field name for JSON tag, add omitempty for non-required fields
 			jsonTag := field.Name
@@ -669,37 +669,21 @@ func generateGetterMethods(builder *strings.Builder, structName string, fields [
 		fieldType := field.Type
 
 		// Check if fieldType is a referenced data type and convert to CamelCase
-		if camelType, exists := dataTypeMap[fieldType]; exists {
-			fieldType = camelType
+		// Skip conversion for built-in types and special types like map[string]any
+		if fieldType != "map[string]any" && fieldType != "string" && fieldType != "int32" && fieldType != "int64" && fieldType != "bool" && !strings.HasPrefix(fieldType, "[]") {
+			if camelType, exists := dataTypeMap[fieldType]; exists {
+				fieldType = camelType
+			}
 		}
-
-		// Determine if the field is a pointer type in the struct
-		// Non-required fields are pointer types in the generated struct
-		isPointerField := !field.Required
-
-		// Determine actual field type (pointer or non-pointer)
-		actualType := fieldType
 
 		// Generate getter method name: GetFieldName
 		getterName := "Get" + fieldName
 
-		// Generate getter method signature with value receiver instead of pointer receiver
-		if isPointerField {
-			// Getter for pointer field returns non-pointer value
-			builder.WriteString(fmt.Sprintf("// %s returns the value of %s field\n", getterName, fieldName))
-			builder.WriteString(fmt.Sprintf("func (s %s) %s() %s {\n", structName, getterName, actualType))
-			builder.WriteString(fmt.Sprintf("\tif s.%s == nil {\n", fieldName))
-			builder.WriteString(fmt.Sprintf("\t\tvar zero %s\n", actualType))
-			builder.WriteString(fmt.Sprintf("\t\treturn zero\n"))
-			builder.WriteString(fmt.Sprintf("\t}\n"))
-			builder.WriteString(fmt.Sprintf("\treturn *s.%s\n", fieldName))
-			builder.WriteString(fmt.Sprintf("}\n\n"))
-		} else {
-			// Getter for non-pointer field returns the value directly
-			builder.WriteString(fmt.Sprintf("// %s returns the value of %s field\n", getterName, fieldName))
-			builder.WriteString(fmt.Sprintf("func (s %s) %s() %s {\n", structName, getterName, actualType))
-			builder.WriteString(fmt.Sprintf("\treturn s.%s\n", fieldName))
-			builder.WriteString(fmt.Sprintf("}\n\n"))
-		}
+		// Generate getter method signature with value receiver
+		// All fields are now non-pointer types, so direct return
+		builder.WriteString(fmt.Sprintf("// %s returns the value of %s field\n", getterName, fieldName))
+		builder.WriteString(fmt.Sprintf("func (s %s) %s() %s {\n", structName, getterName, fieldType))
+		builder.WriteString(fmt.Sprintf("\treturn s.%s\n", fieldName))
+		builder.WriteString(fmt.Sprintf("}\n\n"))
 	}
 }
