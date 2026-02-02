@@ -214,11 +214,10 @@ func ParseMCPTools(content string) ([]*MCPTool, []*MCPData, string, error) {
 			continue
 		}
 
-		if strings.HasPrefix(line, "data") {
-			parts := strings.Fields(line)
-			if len(parts) < 2 {
-				return nil, nil, "", fmt.Errorf("line %d: invalid data declaration", i+1)
-			}
+		// Check for data declaration without brace (must be exactly "data" followed by name)
+		parts := strings.Fields(line)
+		if len(parts) == 2 && parts[0] == "data" {
+			// Format: data system
 			// Create new data type
 			currentData = &MCPData{
 				Name: parts[1],
@@ -270,7 +269,6 @@ func ParseMCPTools(content string) ([]*MCPTool, []*MCPData, string, error) {
 						descriptionBuilder.WriteString("\n")
 						descriptionBuilder.WriteString(nextLine[:endQuote])
 						// Update current line index to j since we've processed these lines
-						i = j
 						break
 					}
 					// No closing quote yet, add entire line
@@ -405,12 +403,23 @@ func parseField(line string) (MCPField, error) {
 	if strings.HasPrefix(fieldType, "[") && strings.HasSuffix(fieldType, "]") {
 		// Extract the inner type and convert to golang slice syntax
 		innerType := fieldType[1 : len(fieldType)-1]
-		field.Type = "[]" + innerType
+		// Handle special types in array
+		switch innerType {
+		case "object":
+			field.Type = "[]map[string]any"
+		case "any":
+			field.Type = "[]any"
+		default:
+			field.Type = "[]" + innerType
+		}
 	} else {
-		// Handle object type: object -> map[string]any
-		if fieldType == "object" {
+		// Handle special types
+		switch fieldType {
+		case "object":
 			field.Type = "map[string]any"
-		} else {
+		case "any":
+			field.Type = "any"
+		default:
 			field.Type = fieldType
 		}
 	}

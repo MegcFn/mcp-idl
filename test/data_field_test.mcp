@@ -1,0 +1,23 @@
+go_package = "main"
+
+tool test_data_field {
+    description "Test data field and any type"
+    
+    input {
+        data: object "Data object" required
+        any_field: any "Any type field" required
+        optional_data: object "Optional data object" optional
+        optional_any: any "Optional any type field" optional
+    }
+    
+    output {
+        result: any "Result with any type" required
+        data_list: [object] "List of data objects" optional
+        any_list: [any] "List of any types" optional
+    }
+}
+
+data test_struct {
+    field1: string "Field 1" required
+    field2: any "Field 2 with any type" optional
+}
